@@ -25,13 +25,29 @@ class App extends Component {
       {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify (newOrder)
+        body: JSON.stringify(newOrder)
       })
     .then(response => response.ok)
     .then(() => this.setState({ orders : [...this.state.orders, newOrder]}))
     .catch(() => 'Sorry, please try again.')
   }
 
+  deleteOrder = (orderToDelete) => {
+    let updatedOrders = this.state.orders.filter(order => order.id !== orderToDelete.id)
+    fetch('http://localhost:3001/api/v1/orders/:order_id', 
+    {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        "id": orderToDelete.id,
+        "name": orderToDelete.name,
+        "ingredients": orderToDelete.ingredients
+      })
+    })
+    .then(response => response.ok)
+    .then(() => this.setState({orders: updatedOrders}))
+    .catch(() => 'Sorry, this request could not be processed, please try again')
+  }
 
   render() {
     return (
@@ -41,7 +57,7 @@ class App extends Component {
           <OrderForm addOrder={this.addOrder}/>
         </header>
 
-        <Orders orders={this.state.orders}/>
+        <Orders orders={this.state.orders} deleteOrder={this.deleteOrder}/>
       </main>
     );
   }
