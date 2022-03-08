@@ -21,8 +21,17 @@ class App extends Component {
   }
 
   addOrder = (newOrder) => {
-    this.setState({ orders : [...this.state.orders, newOrder]})
+    fetch('http://localhost:3001/api/v1/orders',
+      {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify (newOrder)
+      })
+    .then(response => response.ok)
+    .then(() => this.setState({ orders : [...this.state.orders, newOrder]}))
+    .catch(() => 'Sorry, please try again.')
   }
+
 
   render() {
     return (
